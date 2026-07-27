@@ -54,49 +54,27 @@ public_users.get('/isbn/:isbn', async function (req, res) {
   }
 });
   
-// Get book details based on author
-public_users.get('/author/:author', function (req, res) {
-  // Retrieve the author from the request parameters
+// Get book details based on author using async-await with Axios
+public_users.get('/author/:author', async function (req, res) {
   const author = req.params.author;
-  let booksByAuthor = [];
-
-  // Obtain all the keys for the 'books' object and iterate through them
-  let bookKeys = Object.keys(books);
-  bookKeys.forEach((key) => {
-    // Check if the author matches the one provided in the request parameters
-    if (books[key].author === author) {
-      booksByAuthor.push(books[key]);
-    }
-  });
-
-  // Check if any books were found and return the result
-  if (booksByAuthor.length > 0) {
-    return res.status(200).send(JSON.stringify(booksByAuthor, null, 4));
-  } else {
-    return res.status(404).json({ message: "Author not found" });
+  try {
+    // Assuming your server is running locally on port 5000
+    const response = await axios.get(`http://localhost:${PORT}/author/${author}`);
+    return res.status(200).send(JSON.stringify(response.data, null, 4));
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching book details by author", error: error.message });
   }
 });
 
-// Get all books based on title
-public_users.get('/title/:title', function (req, res) {
-  // Retrieve the title from the request parameters
+// Get all books based on title using async-await with Axios
+public_users.get('/title/:title', async function (req, res) {
   const title = req.params.title;
-  let booksByTitle = [];
-
-  // Obtain all the keys for the 'books' object and iterate through them
-  let bookKeys = Object.keys(books);
-  bookKeys.forEach((key) => {
-    // Check if the title matches the one provided in the request parameters
-    if (books[key].title === title) {
-      booksByTitle.push(books[key]);
-    }
-  });
-
-  // Check if any books were found and return the result
-  if (booksByTitle.length > 0) {
-    return res.status(200).send(JSON.stringify(booksByTitle, null, 4));
-  } else {
-    return res.status(404).json({ message: "Title not found" });
+  try {
+    // Assuming your server is running locally on port 5000
+    const response = await axios.get(`http://localhost:5000/title/${title}`);
+    return res.status(200).send(JSON.stringify(response.data, null, 4));
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching book details by title", error: error.message });
   }
 });
 
