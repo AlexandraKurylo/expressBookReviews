@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 let books = require("./booksdb.js");
+const { PORT } = require('../index.js');
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
@@ -29,19 +30,28 @@ public_users.post("/register", (req,res) => {
   }
 });
 
-// Get the book list available in the shop
-public_users.get('/',function (req, res) {
-  // Send the books object as a neatly formatted JSON string
-  return res.status(200).send(JSON.stringify(books, null, 4));
+// Get the book list available in the shop using async-await with Axios
+public_users.get('/', async function (req, res) {
+  try {
+    // Assuming your server is running locally on port 5000
+    const response = await axios.get(`http://localhost:${PORT}/`);
+    return res.status(200).send(JSON.stringify(response.data, null, 4));
+  } catch (error) {
+    // Fallback or error response if the axios call fails
+    return res.status(500).json({ message: "Error fetching books", error: error.message });
+  }
 });
 
-// Get book details based on ISBN
-public_users.get('/isbn/:isbn', function (req, res) {
-  // Retrieve the ISBN from the request parameters
+// Get book details based on ISBN using async-await with Axios
+public_users.get('/isbn/:isbn', async function (req, res) {
   const isbn = req.params.isbn;
-  
-  // Send the specific book details based on the ISBN
-  return res.status(200).send(JSON.stringify(books[isbn], null, 4));
+  try {
+    // Assuming your server is running locally on port 5000
+    const response = await axios.get(`http://localhost:${PORT}/isbn/${isbn}`);
+    return res.status(200).send(JSON.stringify(response.data, null, 4));
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching book details by ISBN", error: error.message });
+  }
 });
   
 // Get book details based on author
