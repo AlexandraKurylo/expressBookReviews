@@ -71,7 +71,7 @@ public_users.get('/title/:title', async function (req, res) {
   const title = req.params.title;
   try {
     // Assuming your server is running locally on port 5000
-    const response = await axios.get(`http://localhost:5000/title/${title}`);
+    const response = await axios.get(`http://localhost:${PORT}/title/${title}`);
     return res.status(200).send(JSON.stringify(response.data, null, 4));
   } catch (error) {
     return res.status(500).json({ message: "Error fetching book details by title", error: error.message });
