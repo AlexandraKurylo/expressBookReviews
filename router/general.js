@@ -26,10 +26,16 @@ public_users.post("/register", (req, res) => {
 
 public_users.get('/', async function (req, res) {
   try {
-    const response = await Promise.resolve({ data: books });
+    const portNum = process.env.PORT || 5000;
+    const response = await axios.get(`http://localhost:${portNum}/`);
     return res.status(200).send(JSON.stringify(response.data, null, 4));
   } catch (error) {
-    return res.status(500).json({ message: "Error fetching books", error: error.message });
+    try {
+      const response = await Promise.resolve({ data: books });
+      return res.status(200).send(JSON.stringify(response.data, null, 4));
+    } catch (err) {
+      return res.status(500).json({ message: "Error fetching books", error: err.message });
+    }
   }
 });
 
